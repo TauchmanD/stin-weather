@@ -7,5 +7,10 @@ from front.data_handler import get_current_weather
 
 
 def index(request):
-    current_weather = get_current_weather(50.77, 15.05)
-    return JsonResponse(current_weather.json(), safe=False)
+    current_weather = get_current_weather(47.46, 7.38)
+    context = {
+        'current_weather': current_weather,
+        'weather': current_weather.weather[0],
+        'image_path': "front/icons/" + current_weather.weather[0].icon + ".png"
+    }
+    return render(request, 'front/index.html', context)
