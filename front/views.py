@@ -7,7 +7,7 @@ from front.data_handler import get_current_weather
 
 
 def index(request):
-    current_weather = get_current_weather(47.46, 7.38)
+    current_weather = get_current_weather(50.73, 15.02)
     context = {
         'current_weather': current_weather,
         'weather': current_weather.weather[0],
