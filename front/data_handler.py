@@ -22,8 +22,6 @@ def get_current_weather(lat: float, lon: float) -> CurrentWeather:
         print(e)
         raise ValueError()
 
-    print(result.json())
     current_weather = CurrentWeather(**result.json())
 
     return current_weather
-
