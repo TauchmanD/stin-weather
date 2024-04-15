@@ -29,6 +29,12 @@ jobs:
     - name: Run Tests
       run: |
         pytest
+      env:
+        CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
+        WEATHER_API_KEY: $${{ secrets.WEATHER_API_KEY }}
     - name: Coverage
       run: |
         pytest --cov=front
+      env:
+        CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
+        WEATHER_API_KEY: $${{ secrets.WEATHER_API_KEY }}
