@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
 
 from front.data_handler import get_current_weather
 
@@ -7,10 +6,10 @@ from front.data_handler import get_current_weather
 
 
 def index(request):
-    current_weather = get_current_weather(50.73, 15.02)
+    current_weather = get_current_weather(57.00, 42.00)
     context = {
-        'current_weather': current_weather,
-        'weather': current_weather.weather[0],
-        'image_path': "front/icons/" + current_weather.weather[0].icon + ".png"
+        "current_weather": current_weather,
+        "weather": current_weather.weather[0],
+        "image_path": "front/icons/" + current_weather.weather[0].icon + ".png",
     }
-    return render(request, 'front/index.html', context)
+    return render(request, "front/index.html", context)
