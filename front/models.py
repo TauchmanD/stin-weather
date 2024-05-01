@@ -33,3 +33,17 @@ class CurrentWeather(BaseModel):
     sys: Location
     timezone: int
     name: str
+
+
+class WeatherUser(models.Model):
+    username = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.username
+
+
+class FavouriteLocation(models.Model):
+    user = models.ForeignKey(WeatherUser, on_delete=models.CASCADE)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
