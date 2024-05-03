@@ -28,13 +28,17 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        pytest
+        coverage run -m pytest
       env:
         CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
         WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+        DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
     - name: Coverage
       run: |
-        pytest --cov=front
+        coverage report -m
       env:
         CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
         WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+        DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}

@@ -27,12 +27,16 @@ if READ_DOT_ENV_FILE:
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-r=eatz@x0b#!$qi4+@mx+bpu#7@w+@1e7)k$s0cwd0m2=%n#()"
+CURRENT_WEATHER_API_URL = env.str("CURRENT_WEATHER_API_URL")
+WEATHER_API_KEY = env.str("WEATHER_API_KEY")
+SECRET_KEY = env.str("DJANGO_SECRET")
+IS_APP = "DYNO" in os.environ and not "CI" in os.environ
+DEBUG = not IS_APP
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+if not DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -75,6 +79,12 @@ TEMPLATES = [
     },
 ]
 
+CSRF_COOKIE_NAME = 'tokenname_csrftoken'
+CSRF_COOKIE_SECURE = False
+CSRF_HEADER_NAME = CSRF_COOKIE_NAME
+SESSION_COOKIE_NAME = 'tokenname_sessionid'
+SESSION_COOKIE_SECURE = False
+
 WSGI_APPLICATION = "weather.wsgi.application"
 
 
@@ -82,10 +92,11 @@ WSGI_APPLICATION = "weather.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': env.db(),
+    'test': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        },
 }
 
 AUTH_USER_MODEL = 'front.WeatherUser'
@@ -123,12 +134,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CURRENT_WEATHER_API_URL = env.str("CURRENT_WEATHER_API_URL")
-WEATHER_API_KEY = env.str("WEATHER_API_KEY")
