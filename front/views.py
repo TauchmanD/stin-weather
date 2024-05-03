@@ -8,7 +8,6 @@ from front.user_handling import register_user, authenticate_user
 
 
 def index(request):
-    print(request.user)
     current_weather = get_current_weather(57.00, 42.00)
     context = {
         "current_weather": current_weather,
