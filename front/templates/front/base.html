@@ -10,7 +10,14 @@
             <li><a href="/">Home</a></li>
         </ul>
         {% if request.user.is_authenticated %}
-            <p>Welcome, {{ request.user.username }}!</p>
+            <p>
+                {{ request.user.username }}
+                {% if request.user.paying %}
+                    (PRO user)
+                {% else %}
+                    | Add <a href="{% url 'payment' %}">payment method</a> and become PRO!
+                {% endif %}
+            </p>
             <a href="{% url 'signout' %}">Logout</a>
         {% else %}
             <a href="{% url 'signin' %}">Login</a>
