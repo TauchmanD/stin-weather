@@ -8,6 +8,7 @@ from front.user_handling import register_user, authenticate_user
 
 
 def index(request):
+    print(request.user)
     current_weather = get_current_weather(57.00, 42.00)
     context = {
         "current_weather": current_weather,
@@ -32,13 +33,15 @@ def signup(request):
 
 def signin(request):
     if request.method == "POST":
-        email = request.POST["email"]
-        password = request.POST["password"]
+        email = request.POST.get("email")
+        password = request.POST.get("password")
         user = authenticate_user(email, password)
         if user:
+            print(user)
             login(request, user)
             return redirect('index')
-        return render(request, 'front/login.html', {'error': 'Invalid username or password'})
+        else:
+            return render(request, 'front/login.html', {'error': 'Invalid username or password'})
     return render(request, 'front/login.html')
 
 

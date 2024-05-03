@@ -1,12 +1,16 @@
+{% extends 'front/base.html' %}
 {% load static %}
-{% if current_weather %}
-    <h1>Aktuální počasí - {{ current_weather.name }}</h1>
-    <img src="{% static image_path %}">
-    <h2>Počasí text</h2>
-    <p>{{ weather.main }} - {{ weather.description }}</p>
-    <h2>Teploty</h2>
-    <p>Aktuální - {{ current_weather.main.temp }}</p>
-    <p>Pocitově - {{ current_weather.main.feels_like }}</p>
-{% else %}
-    <h1>Unlucky</h1>
-{% endif %}
+{% block title %}Home - My Site{% endblock %}
+{% block content %}
+    {% if current_weather %}
+        <h1>Aktuální počasí - {{ current_weather.name }}</h1>
+        <img src="{% static image_path %}">
+        <h2>Počasí text</h2>
+        <p>{{ weather.main }} - {{ weather.description }}</p>
+        <h2>Teploty</h2>
+        <p>Aktuální - {{ current_weather.main.temp }}</p>
+        <p>Pocitově - {{ current_weather.main.feels_like }}</p>
+    {% else %}
+        <h1>Unlucky</h1>
+    {% endif %}
+{% endblock %}
