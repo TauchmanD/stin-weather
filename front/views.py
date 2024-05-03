@@ -32,13 +32,15 @@ def signup(request):
 
 def signin(request):
     if request.method == "POST":
-        email = request.POST["email"]
-        password = request.POST["password"]
+        email = request.POST.get("email")
+        password = request.POST.get("password")
         user = authenticate_user(email, password)
         if user:
+            print(user)
             login(request, user)
             return redirect('index')
-        return render(request, 'front/login.html', {'error': 'Invalid username or password'})
+        else:
+            return render(request, 'front/login.html', {'error': 'Invalid username or password'})
     return render(request, 'front/login.html')
 
 
