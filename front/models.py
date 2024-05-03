@@ -42,6 +42,7 @@ class WeatherUser(AbstractUser):
     favorite_locations = models.ManyToManyField('FavouriteLocation', blank=True)
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True)
+    paying = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username

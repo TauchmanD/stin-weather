@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from front.data_handler import get_current_weather
@@ -47,3 +48,20 @@ def signin(request):
 def signout(request):
     logout(request)
     return redirect('index')
+
+
+@login_required(login_url='signup')
+def payment(request):
+    if request.method == "POST":
+        card_number = request.POST.get("card_number")
+        expiration_date = request.POST.get("expiration_date")
+        cvv = request.POST.get("cvv")
+
+        if card_number and expiration_date and cvv:
+            user = request.user
+            user.paying = True
+            user.save()
+            return redirect('index')
+        return render(request, 'front/payment.html', {'error': 'Invalid card info'})
+    return render(request, 'front/payment.html')
+
