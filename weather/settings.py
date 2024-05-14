@@ -28,6 +28,7 @@ if READ_DOT_ENV_FILE:
 
 # SECURITY WARNING: keep the secret key used in production secret!
 CURRENT_WEATHER_API_URL = env.str("CURRENT_WEATHER_API_URL")
+GEOCODING_API_URL = env.str("GEOCODING_API_URL")
 WEATHER_API_KEY = env.str("WEATHER_API_KEY")
 SECRET_KEY = env.str("DJANGO_SECRET")
 IS_APP = "DYNO" in os.environ and not "CI" in os.environ

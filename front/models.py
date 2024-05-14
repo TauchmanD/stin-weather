@@ -6,7 +6,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
-
+class SearchedCity(BaseModel):
+    name: str
+    lat: float
+    lon: float
+    state: str
 
 class Weather(BaseModel):
     main: str
