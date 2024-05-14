@@ -2,6 +2,15 @@
 {% load static %}
 {% block title %}Home - My Site{% endblock %}
 {% block content %}
+    <form action="{% url 'search' %}" method="get">
+        <input type="text" name="search_string" placeholder="Enter a city name">
+        <button type="submit">Search</button>
+        {% if error_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+    </form>
     {% if current_weather %}
         <h1>Aktuální počasí - {{ current_weather.name }}</h1>
         <img src="{% static image_path %}">

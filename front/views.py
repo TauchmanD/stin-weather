@@ -1,21 +1,44 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
-from front.data_handler import get_current_weather
+from front.data_handler import get_current_weather, get_lat_long_from_search
 from front.user_handling import register_user, authenticate_user
+from front.errors import CityNotFound, EmptySearch
 
 # Create your views here.
 
 
-def index(request):
-    current_weather = get_current_weather(57.00, 42.00)
+def index(request, lat=None, lon=None):
+    error_message = None
+    if lat is not None and lon is not None:
+        current_weather = get_current_weather(lat, lon)
+    else:
+        current_weather = get_current_weather()
+
+    if 'error' in request.session:
+        error_message = request.session.pop('error')
+
     context = {
         "current_weather": current_weather,
-        "weather": current_weather.weather[0],
-        "image_path": "front/icons/" + current_weather.weather[0].icon + ".png",
+        "weather": current_weather.weather[0] if current_weather else None,
+        "image_path": "front/icons/" + current_weather.weather[0].icon + ".png" if current_weather else None,
+        "error_message": error_message
     }
+    print(error_message)
     return render(request, "front/index.html", context)
+
+def search_location(request):
+    search_string = request.GET.get('search_string', '')
+    if search_string:
+        try:
+            location = get_lat_long_from_search(search_string)
+            return redirect('index_with_coordinates', lat=location.lat, lon=location.lon)
+        except CityNotFound:
+            request.session['error'] = 'City not found'
+    return redirect('index')
+
 
 
 def signup(request):
