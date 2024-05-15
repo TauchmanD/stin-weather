@@ -1,0 +1,30 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %}Location Detail{% endblock %}
+{% block content %}
+    <h1>{{ name }}</h1>
+    <div>
+        <h2>Forecast</h2>
+        {% if forecast %}
+            {% for cast in forecast %}
+                {% with 'front/icons/'|add:cast.weather.0.icon|add:'.png' as icon_photo %}
+                    <p>{{ forloop.counter }} hour(s) from now - {{ cast.weather.0.main }} | temp - {{ cast.main.temp }} | <img src="{% static icon_photo %}"></p>
+                {% endwith %}
+            {% endfor %}
+        {% else %}
+            <p>no forecast</p>
+        {% endif %}
+    </div>
+    <div>
+        <h2>Historical data</h2>
+        {% if history %}
+            {% for hist in history %}
+                {% with 'front/icons/'|add:hist.weather.0.icon|add:'.png' as icon_photo %}
+                    <p>{{ forloop.counter }} hour(s) before - {{ hist.weather.0.main }} | temp - {{ hist.main.temp }} | <img src="{% static icon_photo %}"></p>
+                {% endwith %}
+            {% endfor %}
+        {% else %}
+            <p>no history data</p>
+        {% endif %}
+    </div>
+{% endblock %}

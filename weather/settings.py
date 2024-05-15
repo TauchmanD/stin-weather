@@ -31,6 +31,9 @@ CURRENT_WEATHER_API_URL = env.str("CURRENT_WEATHER_API_URL")
 WEATHER_API_KEY = env.str("WEATHER_API_KEY")
 SECRET_KEY = env.str("DJANGO_SECRET")
 DEFAULT_CITY = env.str("DEFAULT_CITY")
+FORECAST_API_URL = env.str("FORECAST_API_URL")
+HISTORY_API_URL = env.str("HISTORY_API_URL")
+
 IS_APP = "DYNO" in os.environ and not "CI" in os.environ
 DEBUG = not IS_APP
 
