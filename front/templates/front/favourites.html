@@ -1,0 +1,23 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %}Favorites{% endblock %}
+{% block content %}
+{% if favourites %}
+    {% for favourite in favourites %}
+        <div>
+            <h3>{{ favourite.name }}</h3>
+            <p>lat: {{ favourite.latitude }}</p>
+            <p>long: {{ favourite.longitude }}</p>
+            <form action="{% url 'location_detail' %}" method="get">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{ favourite.name }}">
+                    <input type="hidden" name="latitude" value="{{ favourite.latitude }}">
+                    <input type="hidden" name="longitude" value="{{ favourite.longitude }}">
+                    <button type="submit">Show Detail</button>
+            </form>
+        </div>
+    {% endfor %}
+{% else %}
+    <h3>You don't have any favourites yet!</h3>
+{% endif %}
+{% endblock %}

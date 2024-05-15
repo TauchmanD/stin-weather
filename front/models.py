@@ -12,6 +12,7 @@ class SearchedCity(BaseModel):
     lon: float
     state: str
 
+
 class Weather(BaseModel):
     main: str
     description: str
@@ -47,6 +48,11 @@ class CurrentWeather(BaseModel):
     name: str
 
 
+class TimeData(BaseModel):
+    main: WeatherInfo
+    weather: List[Weather]
+
+
 class WeatherUser(AbstractUser):
     # Add custom fields here
     favorite_locations = models.ManyToManyField('FavouriteLocation', blank=True)
@@ -60,5 +66,6 @@ class WeatherUser(AbstractUser):
 
 class FavouriteLocation(models.Model):
     user = models.ForeignKey(WeatherUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, default="Old favourite")
     latitude = models.FloatField()
     longitude = models.FloatField()
