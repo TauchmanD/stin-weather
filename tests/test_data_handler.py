@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from unittest.mock import patch
-from front.models import CurrentWeather, Weather, WeatherInfo, Location
+from front.models import CurrentWeather, Weather, WeatherInfo, Location, Coords
 from front.data_handler import get_current_weather
 
 
@@ -37,10 +37,11 @@ def test_get_current_weather_success(mock_get):
 
     mock_get.return_value.json.return_value = mock_response
 
-    lat, long = 57.00, 42.00
-    current_weather = get_current_weather(lat, long)
+    query = "Lukh"
+    current_weather = get_current_weather(query)
 
     expected_current_weather = CurrentWeather(
+        coord=Coords(lat=57, lon=42),
         weather=[Weather(main="Clouds", description="few clouds", icon="02d")],
         main=WeatherInfo(
             temp=8.26,
@@ -63,4 +64,4 @@ def test_get_current_weather_connection_error(mock_get):
     mock_get.side_effect = requests.ConnectionError()
 
     with pytest.raises(ValueError):
-        get_current_weather(37.00, 42.00)
+        get_current_weather("Liberec")

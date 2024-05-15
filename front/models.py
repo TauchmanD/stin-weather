@@ -6,7 +6,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
-
+class SearchedCity(BaseModel):
+    name: str
+    lat: float
+    lon: float
+    state: str
 
 class Weather(BaseModel):
     main: str
@@ -29,7 +33,13 @@ class Location(BaseModel):
     sunset: int
 
 
+class Coords(BaseModel):
+    lat: float
+    lon: float
+
+
 class CurrentWeather(BaseModel):
+    coord: Coords
     weather: List[Weather]
     main: WeatherInfo
     sys: Location

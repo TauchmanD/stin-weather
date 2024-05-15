@@ -30,6 +30,7 @@ if READ_DOT_ENV_FILE:
 CURRENT_WEATHER_API_URL = env.str("CURRENT_WEATHER_API_URL")
 WEATHER_API_KEY = env.str("WEATHER_API_KEY")
 SECRET_KEY = env.str("DJANGO_SECRET")
+DEFAULT_CITY = env.str("DEFAULT_CITY")
 IS_APP = "DYNO" in os.environ and not "CI" in os.environ
 DEBUG = not IS_APP
 
