@@ -13,7 +13,7 @@
             <p>
                 {{ request.user.username }}
                 {% if request.user.paying %}
-                    (PRO user)
+                    (PRO user) | <a href="{% url 'favourites' %}">Favourite Locations</a>
                 {% else %}
                     | Add <a href="{% url 'payment' %}">payment method</a> and become PRO!
                 {% endif %}

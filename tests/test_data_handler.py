@@ -63,5 +63,5 @@ def test_get_current_weather_success(mock_get):
 def test_get_current_weather_connection_error(mock_get):
     mock_get.side_effect = requests.ConnectionError()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ConnectionError):
         get_current_weather("Liberec")

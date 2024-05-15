@@ -35,6 +35,8 @@ jobs:
         DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
         DEFAULT_CITY: ${{ vars.DEFAULT_CITY }}
+        FORECAST_API_URL: ${{ vars.FORECAST_API_URL }}
+        HISTORY_API_URL: ${{ vars.HISTORY_API_URL }}
     - name: Coverage
       run: |
         coverage report -m
@@ -44,3 +46,5 @@ jobs:
         DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
         DEFAULT_CITY: ${{ vars.DEFAULT_CITY }}
+        FORECAST_API_URL: ${{ vars.FORECAST_API_URL }}
+        HISTORY_API_URL: ${{ vars.HISTORY_API_URL }}

@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from front.data_handler import get_current_weather
+from front.data_handler import get_query_weather, is_users_favourite, get_user_favorites, get_weather_forecast, get_historical_data
 from front.models import FavouriteLocation
 from front.user_handling import register_user, authenticate_user
 from front.errors import CityNotFound, EmptySearch
@@ -15,26 +15,8 @@ from front.decorators import payment_required
 
 
 def index(request):
-    error_message = None
-    current_weather = None
-    favorite = False
-    query = request.GET.get('query')
-    if query:
-        try:
-            current_weather = get_current_weather(query)
-        except CityNotFound:
-            error_message = 'City not found'
-    else:
-        current_weather = get_current_weather()
-
-    if current_weather and request.user.is_authenticated:
-        favorite = FavouriteLocation.objects.filter(
-            user=request.user, latitude=current_weather.coord.lat,
-            longitude=current_weather.coord.lon
-        ).exists()
-
-    if 'error' in request.session:
-        error_message = request.session.pop('error')
+    current_weather, error_message = get_query_weather(request)
+    favorite = is_users_favourite(current_weather, request)
 
     context = {
         "current_weather": current_weather,
@@ -49,6 +31,37 @@ def index(request):
 
 @login_required(login_url='login')
 @payment_required(payment_url='payment')
+def favourites(request):
+    favourites_list = get_user_favorites(request.user)
+    context = {
+        "favourites": favourites_list
+    }
+    return render(request, 'front/favourites.html', context)
+
+
+@login_required(login_url='login')
+@payment_required(payment_url='payment')
+def location_detail(request):
+    lat = request.GET.get('latitude')
+    lon = request.GET.get('longitude')
+    name = request.GET.get('name')
+
+    forecast = get_weather_forecast(lat, lon)
+    history = get_historical_data(lat, lon)
+
+    context = {
+        "name": name,
+        "latitude": lat,
+        "longitude": lon,
+        "forecast": forecast,
+        "history": history
+    }
+
+    return render(request, "front/location_detail.html", context)
+
+
+@login_required(login_url='login')
+@payment_required(payment_url='payment')
 def add_favorite(request):
     if request.method == 'POST':
         latitude = request.POST.get('latitude')
@@ -57,7 +70,8 @@ def add_favorite(request):
         favorite_location, created = FavouriteLocation.objects.get_or_create(
             user=request.user,
             latitude=latitude,
-            longitude=longitude
+            longitude=longitude,
+            name=query
         )
         if created:
             print("created favorite")

@@ -4,3 +4,7 @@ class CityNotFound(Exception):
 
 class EmptySearch(Exception):
     pass
+
+
+class ForecastError(Exception):
+    pass
