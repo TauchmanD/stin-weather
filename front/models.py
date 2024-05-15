@@ -33,7 +33,13 @@ class Location(BaseModel):
     sunset: int
 
 
+class Coords(BaseModel):
+    lat: float
+    lon: float
+
+
 class CurrentWeather(BaseModel):
+    coord: Coords
     weather: List[Weather]
     main: WeatherInfo
     sys: Location

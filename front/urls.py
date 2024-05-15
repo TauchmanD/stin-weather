@@ -10,6 +10,7 @@ urlpatterns = [
     path("signin/", views.signin, name="signin"),
     path("signout/", views.signout, name="signout"),
     path("payment/", views.payment, name="payment"),
-    path('search/', views.search_location, name='search'),
-    path('<float:lat>/<float:lon>/', views.index, name='index_with_coordinates')
+    path('<float:lat>/<float:lon>/', views.index, name='index_with_coordinates'),
+    path('add_favorite/', views.add_favorite, name='add_favorite'),
+    path('remove_favorite/', views.remove_favorite, name='remove_favorite'),
 ]
