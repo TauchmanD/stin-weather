@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Favorites{% endblock %}
 {% block content %}
+    <p>psst! Your API key is: {{ key }}</p>
 {% if favourites %}
     {% for favourite in favourites %}
         <div>
