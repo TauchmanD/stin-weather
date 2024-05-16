@@ -10,13 +10,13 @@ from front.models import CurrentWeather, SearchedCity, FavouriteLocation, TimeDa
 from weather import settings
 
 
-def get_current_weather(query: str = settings.DEFAULT_CITY) -> CurrentWeather:
+def get_current_weather(query: str = settings.DEFAULT_CITY, units: str = "metric") -> CurrentWeather:
     try:
         result = requests.get(
             settings.CURRENT_WEATHER_API_URL,
             params={
                 "q": query,
-                "units": "metric",
+                "units": units,
                 "appid": settings.WEATHER_API_KEY,
             },
         )
@@ -72,7 +72,7 @@ def get_start_utc_time(hours_back: int) -> int:
     return int((current_time_utc - delta).timestamp())
 
 
-def get_historical_data(lat: float, lon: float) -> List[TimeData]:
+def get_historical_data(lat: float, lon: float, units: str = "metric", cnt: int = 8, hours_back: int = 8) -> List[TimeData]:
     try:
         result = requests.get(
             settings.HISTORY_API_URL,
@@ -80,10 +80,10 @@ def get_historical_data(lat: float, lon: float) -> List[TimeData]:
                 "lat": lat,
                 "lon": lon,
                 "appid": settings.WEATHER_API_KEY,
-                "units": "metric",
-                "cnt": 8,
+                "units": units,
+                "cnt": cnt,
                 "type": "hour",
-                "start": get_start_utc_time(8),
+                "start": get_start_utc_time(hours_back),
             }
         )
     except (requests.HTTPError, requests.ConnectionError) as e:
