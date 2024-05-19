@@ -113,7 +113,7 @@ DATABASES = {
         'HOST': env.str("DB_HOST"),
         'PORT': env.str("DB_PORT"),
         'OPTIONS': {
-            'sslmode': env.str("DB_SSLMODE"),
+            'sslmode': "require",
         },
     },
     'test': {
