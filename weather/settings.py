@@ -101,7 +101,6 @@ SESSION_COOKIE_SECURE = False
 
 WSGI_APPLICATION = "weather.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
