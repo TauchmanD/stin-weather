@@ -91,7 +91,7 @@ def get_historical_data(lat: float, lon: float, units: str = "metric", cnt: int 
         raise ConnectionError()
 
     historical = check_weather_data(result)
-    return historical
+    return historical[::-1]
 
 
 def is_users_favourite(current_weather: CurrentWeather, request) -> bool:
