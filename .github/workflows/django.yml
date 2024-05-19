@@ -20,11 +20,16 @@ jobs:
       CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
       WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DEFAULT_CITY: ${{ vars.DEFAULT_CITY }}
       FORECAST_API_URL: ${{ vars.FORECAST_API_URL }}
       HISTORY_API_URL: ${{ vars.HISTORY_API_URL }}
       USER_API_KEY: ${{ vars.USER_API_KEY }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_SSLMODE: ${{ secrets.DB_SSLMODE }}
 
     steps:
     - uses: actions/checkout@v3
@@ -46,11 +51,16 @@ jobs:
         CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
         WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
         DEFAULT_CITY: ${{ vars.DEFAULT_CITY }}
         FORECAST_API_URL: ${{ vars.FORECAST_API_URL }}
         HISTORY_API_URL: ${{ vars.HISTORY_API_URL }}
         USER_API_KEY: ${{ vars.USER_API_KEY }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_SSLMODE: ${{ secrets.DB_SSLMODE }}
     - name: Coverage
       run: |
         coverage report -m
