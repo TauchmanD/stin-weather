@@ -19,7 +19,7 @@ jobs:
     env:
       CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
       WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-      DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DEFAULT_CITY: ${{ vars.DEFAULT_CITY }}
       FORECAST_API_URL: ${{ vars.FORECAST_API_URL }}
