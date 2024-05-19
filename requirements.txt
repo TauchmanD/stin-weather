@@ -281,6 +281,9 @@ pytest-cov==5.0.0 ; python_version >= "3.11" and python_version < "4.0" \
 pytest-django==4.8.0 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:5d054fe011c56f3b10f978f41a8efb2e5adfc7e680ef36fb571ada1f24779d90 \
     --hash=sha256:ca1ddd1e0e4c227cf9e3e40a6afc6d106b3e70868fd2ac5798a22501271cd0c7
+pytest-mock==3.14.0 ; python_version >= "3.11" and python_version < "4.0" \
+    --hash=sha256:0b72c38033392a5f4621342fe11e9219ac11ec9d375f8e2a0c164539e0d70f6f \
+    --hash=sha256:2719255a1efeceadbc056d6bf3df3d1c5015530fb40cf347c0f9afac88410bd0
 pytest==8.1.1 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:2a8386cfc11fa9d2c50ee7b2a57e7d898ef90470a7a34c4b949ff59662bb78b7 \
     --hash=sha256:ac978141a75948948817d360297b7aae0fcb9d6ff6bc9ec6d514b85d5a65c044

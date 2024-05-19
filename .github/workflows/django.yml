@@ -16,6 +16,16 @@ jobs:
       matrix:
         python-version: [3.11]
 
+    env:
+      CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
+      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+      DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DEFAULT_CITY: ${{ vars.DEFAULT_CITY }}
+      FORECAST_API_URL: ${{ vars.FORECAST_API_URL }}
+      HISTORY_API_URL: ${{ vars.HISTORY_API_URL }}
+      USER_API_KEY: ${{ vars.USER_API_KEY }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -35,12 +45,3 @@ jobs:
     - name: Coverage
       run: |
         coverage report -m
-      env:
-        CURRENT_WEATHER_API_URL: ${{ vars.CURRENT_WEATHER_API_URL }}
-        WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-        DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        DEFAULT_CITY: ${{ vars.DEFAULT_CITY }}
-        FORECAST_API_URL: ${{ vars.FORECAST_API_URL }}
-        HISTORY_API_URL: ${{ vars.HISTORY_API_URL }}
-        USER_API_KEY: ${{ vars.USER_API_KEY }}
