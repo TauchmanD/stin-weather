@@ -31,7 +31,7 @@ def index(request):
     return render(request, "front/index.html", context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='signin')
 @payment_required(payment_url='payment')
 def favourites(request):
     favourites_list = get_user_favorites(request.user)
@@ -42,7 +42,7 @@ def favourites(request):
     return render(request, 'front/favourites.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='signin')
 @payment_required(payment_url='payment')
 def location_detail(request):
     lat = request.GET.get('latitude')
@@ -63,7 +63,7 @@ def location_detail(request):
     return render(request, "front/location_detail.html", context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='signin')
 @payment_required(payment_url='payment')
 def add_favorite(request):
     if request.method == 'POST':
@@ -86,7 +86,7 @@ def add_favorite(request):
     return HttpResponseRedirect(f'{redirect_url}?query={query}')
 
 
-@login_required(login_url='login')
+@login_required(login_url='signin')
 @payment_required(payment_url='payment')
 def remove_favorite(request):
     latitude = request.POST.get('latitude')
@@ -132,7 +132,7 @@ def signout(request):
     return redirect('index')
 
 
-@login_required(login_url='signup')
+@login_required(login_url='signin')
 def payment(request):
     if request.method == "POST":
         card_number = request.POST.get("card_number")

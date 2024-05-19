@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+import sys
 
 import environ
 
@@ -29,11 +30,12 @@ if READ_DOT_ENV_FILE:
 # SECURITY WARNING: keep the secret key used in production secret!
 CURRENT_WEATHER_API_URL = env.str("CURRENT_WEATHER_API_URL")
 WEATHER_API_KEY = env.str("WEATHER_API_KEY")
-SECRET_KEY = env.str("DJANGO_SECRET")
+SECRET_KEY = env.str("SECRET_KEY")
 DEFAULT_CITY = env.str("DEFAULT_CITY")
 FORECAST_API_URL = env.str("FORECAST_API_URL")
 HISTORY_API_URL = env.str("HISTORY_API_URL")
 USER_API_KEY = env.str("USER_API_KEY")
+
 
 IS_APP = "DYNO" in os.environ and not "CI" in os.environ
 DEBUG = not IS_APP
@@ -100,16 +102,26 @@ SESSION_COOKIE_SECURE = False
 
 WSGI_APPLICATION = "weather.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+DB_NAME = env.str("DB_NAME")
+DB_USER = env.str("DB_USER")
+DB_PASSWORD = env.str("DB_PASSWORD")
+DB_HOST = env.str("DB_HOST")
+DB_PORT = env.str("DB_PORT")
 
 DATABASES = {
-    'default': env.db(),
-    'test': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+        'OPTIONS': {
+            'sslmode': "require",
         },
+    }
 }
 
 AUTH_USER_MODEL = 'front.WeatherUser'
