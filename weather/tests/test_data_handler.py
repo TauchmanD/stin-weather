@@ -1,10 +1,11 @@
 import pytest
 import requests
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
 from datetime import datetime, timezone, timedelta
 
 from front.errors import CityNotFound, EmptySearch, ForecastError
 from front.models import CurrentWeather, SearchedCity, FavouriteLocation, TimeData
+from front.user_handling import register_user
 from weather import settings
 from front.data_handler import (
     get_current_weather,

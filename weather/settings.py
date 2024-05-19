@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+import sys
 
 import environ
 
@@ -126,6 +127,9 @@ DATABASES = {
             'NAME': ':memory:',
         },
 }
+# if 'pytest' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
+#     print("cs")
+#     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 AUTH_USER_MODEL = 'front.WeatherUser'
 # Password validation
