@@ -10,6 +10,8 @@ from front.models import FavouriteLocation
 from front.user_handling import register_user, authenticate_user
 from front.errors import CityNotFound, EmptySearch
 from front.decorators import payment_required
+from weather import settings
+
 
 # Create your views here.
 
@@ -34,7 +36,8 @@ def index(request):
 def favourites(request):
     favourites_list = get_user_favorites(request.user)
     context = {
-        "favourites": favourites_list
+        "favourites": favourites_list,
+        "key": settings.USER_API_KEY
     }
     return render(request, 'front/favourites.html', context)
 

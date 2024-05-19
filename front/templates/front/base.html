@@ -6,14 +6,14 @@
 </head>
 <body>
     <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-        </ul>
+        <p>
+            <a href="/">Home</a> |
+
         {% if request.user.is_authenticated %}
-            <p>
+
                 {{ request.user.username }}
                 {% if request.user.paying %}
-                    (PRO user) | <a href="{% url 'favourites' %}">Favourite Locations</a>
+                    (PRO user) | <a href="{% url 'favourites' %}">Favourite Locations</a> | <a href="/api/docs">API</a>
                 {% else %}
                     | Add <a href="{% url 'payment' %}">payment method</a> and become PRO!
                 {% endif %}
