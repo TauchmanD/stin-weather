@@ -1,67 +1,145 @@
 import pytest
 import requests
+from unittest.mock import patch, Mock
+from datetime import datetime, timezone, timedelta
 
-from unittest.mock import patch
-from front.models import CurrentWeather, Weather, WeatherInfo, Location, Coords
-from front.data_handler import get_current_weather
+from front.errors import CityNotFound, EmptySearch, ForecastError
+from front.models import CurrentWeather, SearchedCity, FavouriteLocation, TimeData
+from weather import settings
+from front.data_handler import (
+    get_current_weather,
+    check_weather_data,
+    get_weather_forecast,
+    get_start_utc_time,
+    get_historical_data,
+    is_users_favourite,
+    get_query_weather,
+    get_user_favorites
+)
 
 
-@patch("requests.get")
-def test_get_current_weather_success(mock_get):
-    mock_response = {
-        "coord": {"lon": 42, "lat": 57},
-        "weather": [
-            {"id": 801, "main": "Clouds", "description": "few clouds", "icon": "02d"}
-        ],
-        "base": "stations",
-        "main": {
-            "temp": 8.26,
-            "feels_like": 5.09,
-            "temp_min": 8.26,
-            "temp_max": 8.26,
-            "pressure": 993,
-            "humidity": 58,
-            "sea_level": 993,
-            "grnd_level": 979,
-        },
-        "visibility": 10000,
-        "wind": {"speed": 5.84, "deg": 238, "gust": 9.35},
-        "clouds": {"all": 18},
-        "dt": 1713191887,
-        "sys": {"country": "RU", "sunrise": 1713146584, "sunset": 1713198027},
-        "timezone": 10800,
-        "id": 533555,
-        "name": "Lukh",
+@pytest.fixture
+def mock_requests_get():
+    with patch('front.data_handler.requests.get') as mock_get:
+        yield mock_get
+
+
+def test_get_current_weather_success(mock_requests_get):
+    mock_response = Mock()
+    mock_response.json.return_value = {
         "cod": 200,
+        "coord": {"lat": 51.5074, "lon": -0.1278},
+        "weather": [{"main": "Clear", "description": "clear sky", "icon": "01d"}],
+        "main": {"temp": 15.0, "feels_like": 14.0, "temp_min": 10.0, "temp_max": 20.0, "pressure": 1012, "humidity": 50},
+        "sys": {"country": "GB", "sunrise": 1623223620, "sunset": 1623277260},
+        "timezone": 3600,
+        "name": "London"
     }
+    mock_requests_get.return_value = mock_response
 
-    mock_get.return_value.json.return_value = mock_response
-
-    query = "Lukh"
-    current_weather = get_current_weather(query)
-
-    expected_current_weather = CurrentWeather(
-        coord=Coords(lat=57, lon=42),
-        weather=[Weather(main="Clouds", description="few clouds", icon="02d")],
-        main=WeatherInfo(
-            temp=8.26,
-            feels_like=5.09,
-            temp_min=8.26,
-            temp_max=8.26,
-            pressure=993.0,
-            humidity=58.0,
-        ),
-        sys=Location(country="RU", sunrise=1713146584, sunset=1713198027),
-        timezone=10800,
-        name="Lukh",
-    )
-
-    assert current_weather == expected_current_weather
+    weather = get_current_weather("London")
+    assert isinstance(weather, CurrentWeather)
+    assert weather.coord.lat == 51.5074
+    assert weather.coord.lon == -0.1278
+    assert weather.name == "London"
 
 
-@patch("requests.get")
-def test_get_current_weather_connection_error(mock_get):
-    mock_get.side_effect = requests.ConnectionError()
+def test_get_current_weather_city_not_found(mock_requests_get):
+    mock_response = Mock()
+    mock_response.json.return_value = {"cod": 404}
+    mock_requests_get.return_value = mock_response
+
+    with pytest.raises(CityNotFound):
+        get_current_weather("InvalidCity")
+
+
+def test_get_current_weather_connection_error(mock_requests_get):
+    mock_requests_get.side_effect = requests.ConnectionError
 
     with pytest.raises(ConnectionError):
-        get_current_weather("Liberec")
+        get_current_weather("London")
+
+
+def test_check_weather_data_success():
+    mock_response = Mock()
+    mock_response.json.return_value = {
+        "cod": "200",
+        "cnt": 8,
+        "list": [
+            {
+                "main": {"temp": 15.0, "feels_like": 14.0, "temp_min": 10.0, "temp_max": 20.0, "pressure": 1012, "humidity": 50},
+                "weather": [{"main": "Clear", "description": "clear sky", "icon": "01d"}]
+            } for _ in range(8)
+        ]
+    }
+
+    time_data = check_weather_data(mock_response)
+    assert len(time_data) == 8
+    assert all(isinstance(td, TimeData) for td in time_data)
+
+
+def test_check_weather_data_forecast_error():
+    mock_response = Mock()
+    mock_response.json.return_value = {"cod": "404"}
+
+    with pytest.raises(ForecastError):
+        check_weather_data(mock_response)
+
+
+def test_get_weather_forecast_success(mock_requests_get):
+    mock_response = Mock()
+    mock_response.json.return_value = {
+        "cod": "200",
+        "cnt": 8,
+        "list": [
+            {
+                "main": {"temp": 15.0, "feels_like": 14.0, "temp_min": 10.0, "temp_max": 20.0, "pressure": 1012, "humidity": 50},
+                "weather": [{"main": "Clear", "description": "clear sky", "icon": "01d"}]
+            } for _ in range(8)
+        ]
+    }
+    mock_requests_get.return_value = mock_response
+
+    forecasts = get_weather_forecast(51.5074, -0.1278)
+    assert len(forecasts) == 8
+    assert all(isinstance(td, TimeData) for td in forecasts)
+
+
+def test_get_weather_forecast_connection_error(mock_requests_get):
+    mock_requests_get.side_effect = requests.ConnectionError
+
+    with pytest.raises(ConnectionError):
+        get_weather_forecast(51.5074, -0.1278)
+
+
+def test_get_start_utc_time():
+    hours_back = 5
+    expected_time = int((datetime.now(timezone.utc) - timedelta(hours=hours_back)).timestamp())
+    assert get_start_utc_time(hours_back) == expected_time
+
+
+
+def test_get_historical_data_success(mock_requests_get):
+    mock_response = Mock()
+    mock_response.json.return_value = {
+        "cod": "200",
+        "cnt": 8,
+        "list": [
+            {
+                "main": {"temp": 15.0, "feels_like": 14.0, "temp_min": 10.0, "temp_max": 20.0, "pressure": 1012, "humidity": 50},
+                "weather": [{"main": "Clear", "description": "clear sky", "icon": "01d"}]
+            } for _ in range(8)
+        ]
+    }
+    mock_requests_get.return_value = mock_response
+
+    historical_data = get_historical_data(51.5074, -0.1278)
+    assert len(historical_data) == 8
+    assert all(isinstance(td, TimeData) for td in historical_data)
+
+
+def test_get_historical_data_connection_error(mock_requests_get):
+    mock_requests_get.side_effect = requests.ConnectionError
+
+    with pytest.raises(ConnectionError):
+        get_historical_data(51.5074, -0.1278)

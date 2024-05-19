@@ -112,6 +112,11 @@ DATABASES = {
         },
 }
 
+DATABASES['test'] = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': ':memory:',
+}
+
 AUTH_USER_MODEL = 'front.WeatherUser'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
