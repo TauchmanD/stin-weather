@@ -144,3 +144,117 @@ def test_get_historical_data_connection_error(mock_requests_get):
 
     with pytest.raises(ConnectionError):
         get_historical_data(51.5074, -0.1278)
+
+
+@pytest.fixture
+def mock_get_current_weather():
+    with patch('front.data_handler.get_current_weather') as mock:
+        yield mock
+
+
+def test_get_query_weather_with_query(mock_get_current_weather):
+    # Mocking the request object
+    request = Mock()
+    request.GET.get.return_value = 'London'
+
+    # Mocking the response from get_current_weather function
+    mock_get_current_weather.return_value = 'mocked_current_weather_data'
+
+    # Call the function
+    current_weather, error_message = get_query_weather(request)
+
+    # Assertions
+    assert current_weather == 'mocked_current_weather_data'
+    assert error_message is None
+
+
+def test_get_query_weather_no_query(mock_get_current_weather):
+    # Mocking the request object
+    request = Mock()
+    request.GET.get.return_value = None
+
+    # Mocking the response from get_current_weather function
+    mock_get_current_weather.return_value = 'mocked_current_weather_data'
+
+    # Call the function
+    current_weather, error_message = get_query_weather(request)
+
+    # Assertions
+    assert current_weather == 'mocked_current_weather_data'
+    assert error_message is None
+
+
+def test_get_query_weather_city_not_found(mock_get_current_weather):
+    # Mocking the request object
+    request = Mock()
+    request.GET.get.return_value = 'InvalidCity'
+
+    # Mocking the exception raised by get_current_weather function
+    mock_get_current_weather.side_effect = CityNotFound
+
+    # Call the function
+    current_weather, error_message = get_query_weather(request)
+
+    # Assertions
+    assert current_weather is None
+    assert error_message == 'City not found'
+
+
+def test_is_users_favourite_with_authenticated_user():
+    # Mock current weather and request objects
+    current_weather_mock = Mock()
+    request_mock = Mock()
+
+    # Set the user attribute of the request object
+    request_mock.user.is_authenticated = True
+
+    # Mock the filter method and its return value
+    with patch('front.data_handler.FavouriteLocation.objects.filter') as mock_filter:
+        mock_filter.return_value.exists.return_value = True
+
+        # Call the function to be tested
+        result = is_users_favourite(current_weather_mock, request_mock)
+
+        # Assert that the filter method was called with the correct arguments
+        mock_filter.assert_called_once_with(
+            user=request_mock.user,
+            latitude=current_weather_mock.coord.lat,
+            longitude=current_weather_mock.coord.lon
+        )
+
+        # Assert that the function returns True
+        assert result is True
+
+
+def test_get_user_favorites_with_user():
+    # Mock the user object
+    user_mock = Mock()
+
+    # Mock the filter method and its return value
+    with patch('front.data_handler.FavouriteLocation.objects.filter') as mock_filter:
+        mock_filter.return_value = ['favorite1', 'favorite2']
+
+        # Call the function to be tested
+        result = get_user_favorites(user_mock)
+
+        # Assert that the filter method was called with the correct argument
+        mock_filter.assert_called_once_with(user=user_mock)
+
+        # Assert that the function returns the expected value
+        assert result == ['favorite1', 'favorite2']
+
+
+def test_get_user_favorites_without_user():
+    # Mock the filter method
+    with patch('front.data_handler.FavouriteLocation.objects.filter') as mock_filter:
+        # Set the return value of the mock filter to an empty list
+        mock_filter.return_value = []
+
+        # Call the function to be tested
+        result = get_user_favorites(None)
+
+        # Assert that the filter method was called with the correct argument
+        mock_filter.assert_called_once_with(user=None)
+
+        # Assert that the function returns None
+        assert result is None

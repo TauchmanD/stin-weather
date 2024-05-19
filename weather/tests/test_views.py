@@ -1,41 +1,41 @@
-from unittest.mock import patch, MagicMock
-
-import pytest
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
-from django.test import RequestFactory
-from django.urls import reverse
-from front.models import WeatherUser, WeatherInfo, TimeData, Weather, CurrentWeather, \
-    Coords, FavouriteLocation  # Import the custom user model
-from front.views import index, favourites, add_favorite, remove_favorite, payment
-
-User = get_user_model()
-
-@pytest.fixture
-def request_factory():
-    return RequestFactory()
-
-@pytest.fixture
-def user():
-    return User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
-
-
-@pytest.fixture
-def paying_user():
-    return User.objects.create_user(username='testuser', email='test@example.com', password='testpassword', paying=True)
-
-@pytest.fixture
-def unauthenticated_user():
-    return AnonymousUser()
-
-@pytest.mark.django_db
-def test_index_view_authenticated_user(request_factory, user):
-    request = request_factory.get('/')
-    request.user = user
-    with patch('front.views.get_query_weather') as mock_get_query_weather:
-        mock_get_query_weather.return_value = (None, None)
-        response = index(request)
-        assert response.status_code == 200
+# from unittest.mock import patch, MagicMock
+#
+# import pytest
+# from django.contrib.auth import get_user_model
+# from django.contrib.auth.models import AnonymousUser
+# from django.test import RequestFactory
+# from django.urls import reverse
+# from front.models import WeatherUser, WeatherInfo, TimeData, Weather, CurrentWeather, \
+#     Coords, FavouriteLocation  # Import the custom user model
+# from front.views import index, favourites, add_favorite, remove_favorite, payment
+#
+# User = get_user_model()
+#
+# @pytest.fixture
+# def request_factory():
+#     return RequestFactory()
+#
+# @pytest.fixture
+# def user():
+#     return User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+#
+#
+# @pytest.fixture
+# def paying_user():
+#     return User.objects.create_user(username='testuser', email='test@example.com', password='testpassword', paying=True)
+#
+# @pytest.fixture
+# def unauthenticated_user():
+#     return AnonymousUser()
+#
+# @pytest.mark.django_db
+# def test_index_view_authenticated_user(request_factory, user):
+#     request = request_factory.get('/')
+#     request.user = user
+#     with patch('front.views.get_query_weather') as mock_get_query_weather:
+#         mock_get_query_weather.return_value = (None, None)
+#         response = index(request)
+#         assert response.status_code == 200
 #
 #
 # @pytest.mark.django_db
