@@ -121,15 +121,8 @@ DATABASES = {
         'OPTIONS': {
             'sslmode': "require",
         },
-    },
-    'test': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-        },
+    }
 }
-# if 'pytest' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
-#     print("cs")
-#     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 AUTH_USER_MODEL = 'front.WeatherUser'
 # Password validation
