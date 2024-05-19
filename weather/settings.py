@@ -36,7 +36,6 @@ FORECAST_API_URL = env.str("FORECAST_API_URL")
 HISTORY_API_URL = env.str("HISTORY_API_URL")
 USER_API_KEY = env.str("USER_API_KEY")
 
-
 IS_APP = "DYNO" in os.environ and not "CI" in os.environ
 DEBUG = not IS_APP
 
